@@ -1,0 +1,60 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/object1761872161.json",
+  "title": "Root",
+  "type": "object",
+  "required": [
+    "nome",
+    "endereco",
+    "horarioFuncionamento",
+    "tiposResiduos"
+  ],
+  "properties": {
+    "nome": {
+      "$id": "#root/nome",
+      "title": "Nome",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "string"
+      ],
+      "pattern": "^.*$"
+    },
+    "endereco": {
+      "$id": "#root/endereco",
+      "title": "Endereco",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "string"
+      ],
+      "pattern": "^.*$"
+    },
+    "horarioFuncionamento": {
+      "$id": "#root/horarioFuncionamento",
+      "title": "Horariofuncionamento",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "string"
+      ],
+      "pattern": "^.*$"
+    },
+    "tiposResiduosIds": {
+      "$id": "#root/tiposResiduos",
+      "title": "Tiposresiduos",
+      "type": "array",
+      "default": [],
+      "items":{
+        "$id": "#root/tiposResiduos/items",
+        "title": "Items",
+        "type": "integer",
+        "examples": [
+          0
+        ],
+        "default": 0
+      }
+    }
+  }
+}
