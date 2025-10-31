@@ -1,0 +1,62 @@
+name: Testes e Push para Main
+
+# Gatilho: Executa em pushes e pull requests para a branch 'stagging'
+on:
+  push:
+    branches:
+      - stagging
+  pull_request:
+    branches:
+      - stagging
+
+jobs:
+  # 1. Job para Construir e Rodar os Testes
+  build_and_test:
+    name: Build & Testes de Integração
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Código
+        uses: actions/checkout@v4
+
+      - name: Configurar Java 21 (JDK)
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+          
+      - name: Executar Testes com Maven (e Compilar)
+        # Assumindo que 'mvn verify' roda os testes unitários e de integração (Cucumber)
+        run: mvn clean install -DskipTests=false
+
+      # Opcional: Publicar relatório de testes
+      - name: Publicar Relatórios de Testes (JUnit)
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: teste-relatorios
+          path: target/surefire-reports
+          
+  # 2. Job para Promover o Código para a Main (Só se os testes PASSARAM)
+  push_to_main:
+    name: Promover para Main
+    needs: build_and_test # Depende do sucesso do job 'build_and_test'
+    runs-on: ubuntu-latest
+
+    # CRUCIAL: Só executa se a branch for 'stagging' E o evento for um push (não um PR)
+    if: success() && github.ref == 'refs/heads/stagging' && github.event_name == 'push'
+    
+    steps:
+      - name: Checkout Código (Stagging)
+        uses: actions/checkout@v4
+        
+      - name: Configurar Permissões do Git
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+
+      - name: Promover Branch Stagging para Main
+        # O comando 'git push origin <source_branch>:<target_branch>' copia o conteúdo.
+        # Requer permissão de escrita no token.
+        run: git push origin stagging:main
